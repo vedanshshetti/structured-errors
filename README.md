@@ -1,1 +1,222 @@
 # structured-errors
+
+> A monorepo providing standardized error classes with ISO-8601 timestamps and machine-readable codes across multiple languages.
+
+## Overview
+
+The **structured-errors** monorepo contains language-specific implementations of a `StructuredError` class that enforces consistent error structures for debugging and logging. Each error includes:
+
+- **ISO-8601 timestamp** - When the error was instantiated (the Python implementation uses local time without a timezone offset; the TypeScript implementation uses UTC)
+- **Machine-readable error code** - For programmatic error handling
+- **Human-readable message** - For debugging and user feedback
+- **Optional cause chaining** - Available in the TypeScript implementation
+
+## Packages
+
+This monorepo contains the following language implementations:
+
+| Language | Package | Description |
+|----------|---------|-------------|
+| Python | [`packages/py/`](packages/py/) | Python exception class with structured fields |
+| TypeScript | [`packages/ts/`](packages/ts/) | TypeScript Error subclass with JSON serialization |
+
+## Installation
+
+### Python
+
+The Python package is published as `exceptions_with_structure` and requires Python 3.8+.
+
+#### Using pip
+
+```bash
+pip install exceptions_with_structure
+```
+
+#### From source (development)
+
+```bash
+# Navigate to the Python package
+cd packages/py
+
+# Install in development mode
+pip install -e .
+
+# Or build and install
+pip install build
+python -m build
+pip install dist/exceptions_with_structure-*.whl
+```
+
+#### Usage
+
+```python
+from py import StructuredError
+
+try:
+    raise StructuredError("File not found", "IO_ERR_404")
+except StructuredError as e:
+    print(f"Error {e.error_code}: {e}")
+    print(f"Timestamp: {e.timestamp}")
+```
+
+The Python implementation exposes `message`, `error_code`, and `timestamp`. It does not
+currently support an underlying cause parameter.
+
+### TypeScript / JavaScript
+
+The TypeScript package is published as `@typescript-utils/structured-errors`.
+
+#### Using npm
+
+```bash
+npm install @typescript-utils/structured-errors
+```
+
+#### Using yarn
+
+```bash
+yarn add @typescript-utils/structured-errors
+```
+
+#### Using pnpm
+
+```bash
+pnpm add @typescript-utils/structured-errors
+```
+
+#### From source (development)
+
+```bash
+# Navigate to the TypeScript package
+cd packages/ts
+
+# Install dependencies
+pnpm install
+
+# Build the package
+pnpm run prepublishOnly
+
+# Link locally for development
+pnpm link --global
+```
+
+#### Usage
+
+**TypeScript:**
+
+```typescript
+import StructuredError from '@typescript-utils/structured-errors';
+
+try {
+    throw new StructuredError("Database connection failed", "DB_CONN_ERR");
+} catch (error) {
+    if (error instanceof StructuredError) {
+        console.error(error.to("string"));
+        // [2026-10-17T...Z]: "DB_CONN_ERR" - "Database connection failed" @ ...
+
+        console.log(error.to("json"));
+        // {
+        //   name: 'StructuredError',
+        //   message: 'Database connection failed',
+        //   errCode: 'DB_CONN_ERR',
+        //   timestamp: '2026-10-17T...Z',
+        //   stack: '...',
+        //   cause: undefined
+        // }
+    }
+}
+```
+
+**JavaScript (CommonJS):**
+
+```javascript
+const StructuredError = require('@typescript-utils/structured-errors');
+
+const error = new StructuredError("Invalid input", "VALIDATION_ERR", new Error("Original cause"));
+console.error(error.to("json"));
+```
+
+## Monorepo Structure
+
+```
+structured-errors/
+├── packages/
+│   ├── py/
+│   │   ├── src/py/
+│   │   │   ├── __init__.py      # StructuredError class
+│   │   │   └── utils.py          # Helper utilities (ISO-8601)
+│   │   ├── pyproject.toml        # Python package configuration
+│   │   └── README.md
+│   └── ts/
+│       ├── src/
+│       │   └── index.ts          # StructuredError class
+│       ├── package.json          # npm package configuration
+│       ├── tsconfig.json         # TypeScript configuration
+│       └── pnpm-lock.yaml        # Dependency lock file
+├── LICENSE
+└── README.md
+```
+
+## Development
+
+### Prerequisites
+
+- **Python 3.8+** for the Python package
+- **Node.js 20+** and **pnpm** for the TypeScript package
+
+### Setting up the monorepo
+
+```bash
+# Clone the repository
+git clone https://github.com/vedanshshetti/structured-errors.git
+cd structured-errors
+
+# Set up Python package
+cd packages/py
+pip install -e .
+cd ../..
+
+# Set up TypeScript package
+cd packages/ts
+pnpm install
+pnpm run prepublishOnly
+pnpm link --global
+```
+
+### Building all packages
+
+```bash
+# Build Python package
+cd packages/py
+python -m build
+
+# Build TypeScript package
+cd ../ts
+pnpm run prepublishOnly
+```
+
+## License
+
+All packages in this monorepo are licensed under the **European Union Public Licence 1.2 (EUPL-1.2)**.
+
+See [LICENSE](LICENSE) for full license text.
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request for:
+
+- Bug fixes
+- Feature requests
+- New language implementations
+- Documentation improvements
+
+## Versioning
+
+Each package maintains its own version number in its respective configuration file:
+
+- Python: `packages/py/pyproject.toml`
+- TypeScript: `packages/ts/package.json`
+
+## Support
+
+For questions, issues, or feature requests, please open an issue on the GitHub repository.
