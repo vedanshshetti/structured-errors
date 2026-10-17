@@ -12,6 +12,7 @@
 ## Contributors
 
 - **Python**: Vedansh Shetti ([@vedanshshetti](https://github.com/vedanshshetti))
+- **JavaScript**: Vedansh Shetti ([@vedanshshetti](https://github.com/vedanshshetti))
 - **TypeScript**: Vedansh Shetti ([@vedanshshetti](https://github.com/vedanshshetti))
 
 ## Overview
