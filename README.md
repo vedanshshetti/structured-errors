@@ -2,6 +2,11 @@
 
 > A monorepo providing standardized error classes with ISO-8601 timestamps and machine-readable codes across multiple languages.
 
+## Contributors
+
+- **Python**: Vedansh Shetti ([@vedanshshetti](https://github.com/vedanshshetti))
+- **TypeScript**: Vedansh Shetti ([@vedanshshetti](https://github.com/vedanshshetti))
+
 ## Overview
 
 The **structured-errors** monorepo contains language-specific implementations of a `StructuredError` class that enforces consistent error structures for debugging and logging. Each error includes:
