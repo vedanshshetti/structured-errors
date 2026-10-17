@@ -9,7 +9,7 @@
 
 ## Overview
 
-The **structured-errors** monorepo contains language-specific implementations of a `StructuredError` class that enforces consistent error structures for debugging and logging. Each error includes:
+The **structured-errors** monorepo contains language-specific implementations of structured error classes that enforce consistent error structures for debugging and logging. Each error includes:
 
 - **ISO-8601 timestamp** - When the error was instantiated (the Python implementation uses local time without a timezone offset; the TypeScript implementation uses UTC)
 - **Machine-readable error code** - For programmatic error handling
@@ -55,11 +55,11 @@ pip install dist/exceptions_with_structure-*.whl
 #### Usage
 
 ```python
-from py import StructuredError
+from py import StructuredException
 
 try:
-    raise StructuredError("File not found", "IO_ERR_404")
-except StructuredError as e:
+    raise StructuredException("File not found", "IO_ERR_404")
+except StructuredException as e:
     print(f"Error {e.error_code}: {e}")
     print(f"Timestamp: {e.timestamp}")
 ```
@@ -148,7 +148,7 @@ structured-errors/
 ├── packages/
 │   ├── py/
 │   │   ├── src/py/
-│   │   │   ├── __init__.py      # StructuredError class
+│   │   │   ├── __init__.py      # StructuredException class
 │   │   │   └── utils.py          # Helper utilities (ISO-8601)
 │   │   ├── pyproject.toml        # Python package configuration
 │   │   └── README.md
