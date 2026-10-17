@@ -4,7 +4,7 @@
  * This class extends the native Error object to ensure compatibility with existing
  * try/catch blocks while adding machine-readable fields like timestamps and error codes.
  */
-export class StructuredError extends Error {
+class StructuredError extends Error {
     /**
      * Creates a new instance of StructuredError.
      * 
@@ -53,4 +53,8 @@ export class StructuredError extends Error {
             return `[${this.timestamp}]: "${this.errCode}" - "${this.message}" @ ${stackTrace}`;
         }
     }
+}
+
+if (typeof window !== 'undefined') {
+    window.StructuredError = StructuredError;
 }
