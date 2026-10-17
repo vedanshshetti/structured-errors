@@ -13,5 +13,8 @@
 	"keywords": [],
 	"author": "Vedansh Shetti <vedansh.shetti@gmail.com>",
 	"license": "EUPL-1.2",
-	"description": ""
+	"description": "",
+	"devDependencies": {
+		"@types/node": "^26.6.5"
+	}
 }

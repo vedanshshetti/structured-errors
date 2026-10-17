@@ -4,7 +4,7 @@
  * This class extends the native Error object to ensure compatibility with existing
  * try/catch blocks while adding machine-readable fields like timestamps and error codes.
  */
-export class StructuredError extends Error implements Error {
+export = class StructuredError extends Error implements Error {
     /**
      * An ISO-8601 formatted timestamp indicating exactly when the error was instantiated.
      * @example "2026-10-18T14:30:00.000Z"
