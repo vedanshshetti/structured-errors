@@ -1,0 +1,38 @@
+[project]
+name = "exceptions_with_structure"
+version = "1.0.0"
+description = "A standardized error class with ISO-8601 timestamps and machine-readable codes."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "EUPL-1.2" }
+authors = [
+    { name = "Vedansh Shetti", email = "vedansh.shetti@gmail.com" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
+    "Operating System :: OS Independent",
+    "Typing :: Typed",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+# Tells hatchling to look inside src/py for the package code
+packages = ["src/py"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src/py",
+    "/README.md",
+    "/LICENSE",
+]
+exclude = [
+    "/.git",
+    "/.gitignore",
+    "/dist",
+    "/build",
+    "/__pycache__",
+]
