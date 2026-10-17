@@ -157,6 +157,16 @@ const error = new StructuredError("Invalid input", "VALIDATION_ERR", new Error("
 console.error(error.to("json"));
 ```
 
+Or use the CDN at `https://cdn.jsdelivr.net/gh/vedanshshetti/structured-errors@latest/packages/js/index.js`:
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/vedanshshetti/structured-errors@latest/packages/js/index.js"></script>
+```
+or
+```js
+import StructuredError from "https://cdn.jsdelivr.net/gh/vedanshshetti/structured-errors@latest/packages/js/index.js";
+```
+
 `to("json")` returns an object containing `name`, `message`, `errCode`,
 `timestamp`, `stack`, and `cause`. `to("string")` returns a formatted string
 for logs. The `cause` argument is optional and may contain any underlying
