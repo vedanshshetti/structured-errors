@@ -1,6 +1,6 @@
 [project]
 name = "exceptions_with_structure"
-version = "1.1.0"
+version = "1.1.0.post1"
 description = "A standardized error class with ISO-8601 timestamps and machine-readable codes."
 readme = "README.md"
 requires-python = ">=3.8"
