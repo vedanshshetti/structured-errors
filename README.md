@@ -1,6 +1,13 @@
 # structured-errors
 
-> A monorepo providing standardized error classes with ISO-8601 timestamps and machine-readable codes across multiple languages.
+> Standardized error classes with ISO-8601 timestamps and machine-readable codes for Python and TypeScript.
+
+## At a glance
+
+| Package | Install | Main type |
+|---------|---------|-----------|
+| Python | `exceptions_with_structure` | `StructuredException` |
+| TypeScript / JavaScript | `@typescript-utils/structured-errors` | `StructuredError` |
 
 ## Contributors
 
@@ -9,12 +16,13 @@
 
 ## Overview
 
-The **structured-errors** monorepo contains language-specific implementations of structured error classes that enforce consistent error structures for debugging and logging. Each error includes:
+Each implementation adds the following information to a normal error:
 
-- **ISO-8601 timestamp** - When the error was instantiated (the Python implementation uses local time without a timezone offset; the TypeScript implementation uses UTC)
-- **Machine-readable error code** - For programmatic error handling
-- **Human-readable message** - For debugging and user feedback
-- **Optional cause chaining** - Available in the TypeScript implementation
+- **ISO-8601 timestamp** - When the error was instantiated. Python uses the local
+  time without a timezone offset; TypeScript uses UTC.
+- **Machine-readable error code** - For programmatic error handling.
+- **Human-readable message** - For debugging and user feedback.
+- **Optional cause chaining** - Available in the TypeScript implementation.
 
 ## Packages
 
@@ -55,17 +63,25 @@ pip install dist/exceptions_with_structure-*.whl
 #### Usage
 
 ```python
-from py import StructuredException
+from py import StructuredException, StructuredValueError
 
 try:
     raise StructuredException("File not found", "IO_ERR_404")
 except StructuredException as e:
     print(f"Error {e.error_code}: {e}")
     print(f"Timestamp: {e.timestamp}")
+
+try:
+    raise StructuredValueError("Expected a positive number", "VALUE_ERR_POSITIVE")
+except StructuredValueError as e:
+    print(f"Error {e.error_code}: {e}")
 ```
 
-The Python implementation exposes `message`, `error_code`, and `timestamp`. It does not
-currently support an underlying cause parameter.
+`StructuredException` accepts `message` and `error_code` and exposes `timestamp`.
+The package also provides structured variants of common built-in exceptions,
+including `StructuredTypeError`, `StructuredValueError`, `StructuredKeyError`,
+`StructuredIndexError`, `StructuredImportError`, and `StructuredLookupError`.
+It does not currently support an underlying cause parameter.
 
 ### TypeScript / JavaScript
 
@@ -110,7 +126,7 @@ pnpm link --global
 **TypeScript:**
 
 ```typescript
-import StructuredError from '@typescript-utils/structured-errors';
+import StructuredError = require('@typescript-utils/structured-errors');
 
 try {
     throw new StructuredError("Database connection failed", "DB_CONN_ERR");
@@ -141,15 +157,21 @@ const error = new StructuredError("Invalid input", "VALIDATION_ERR", new Error("
 console.error(error.to("json"));
 ```
 
-## Monorepo Structure
+`to("json")` returns an object containing `name`, `message`, `errCode`,
+`timestamp`, `stack`, and `cause`. `to("string")` returns a formatted string
+for logs. The `cause` argument is optional and may contain any underlying
+error or value.
+
+## Repository structure
 
 ```
 structured-errors/
 ├── packages/
 │   ├── py/
 │   │   ├── src/py/
-│   │   │   ├── __init__.py      # StructuredException class
-│   │   │   └── utils.py          # Helper utilities (ISO-8601)
+│   │   │   ├── __init__.py      # Public Python exports
+│   │   │   ├── Exceptions.py    # Structured exception classes
+│   │   │   └── utils.py         # ISO-8601 timestamp helper
 │   │   ├── pyproject.toml        # Python package configuration
 │   │   └── README.md
 │   └── ts/
@@ -167,7 +189,7 @@ structured-errors/
 ### Prerequisites
 
 - **Python 3.8+** for the Python package
-- **Node.js 20+** and **pnpm** for the TypeScript package
+- **Node.js** and **pnpm** for the TypeScript package
 
 ### Setting up the monorepo
 
@@ -188,7 +210,7 @@ pnpm run prepublishOnly
 pnpm link --global
 ```
 
-### Building all packages
+### Building packages
 
 ```bash
 # Build Python package
@@ -199,6 +221,9 @@ python -m build
 cd ../ts
 pnpm run prepublishOnly
 ```
+
+The TypeScript build emits declarations and source maps in `packages/ts/dist`.
+The package's `postpublish` script removes that directory after publishing.
 
 ## License
 
@@ -224,4 +249,5 @@ Each package maintains its own version number in its respective configuration fi
 
 ## Support
 
-For questions, issues, or feature requests, please open an issue on the GitHub repository.
+For questions, issues, or feature requests, please
+[open an issue](https://github.com/vedanshshetti/structured-errors/issues) on GitHub.
