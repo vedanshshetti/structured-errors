@@ -2,7 +2,7 @@
 
 Every Error Object / String should:
 
-1. Contain a `timestamp` property or field, as a UTC ISO-8601 String
+1. Contain a `timestamp` property or field, as a UTC (Universal Coordinated Time) ISO-8601 / RFC-3339 String
 2. Contain an error code for machines and automated systems, in following format:
   UPPERCASE `[domain]/[error]`, for example: `HTTP/401` or `DATABASE/CONNECTION_TIMEOUT`,
   the user can choose, but it must be Uppercase
