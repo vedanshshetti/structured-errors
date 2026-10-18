@@ -26,6 +26,8 @@ StructuredEOFError = _create_structured_error(EOFError, "StructuredEOFError")
 StructuredImportError = _create_structured_error(ImportError, "StructuredImportError")
 StructuredLookupError = _create_structured_error(LookupError, "StructuredLookupError")
 StructuredMemoryError = _create_structured_error(MemoryError, "StructuredMemoryError")
+StructuredSyntaxError = _create_structured_error(SyntaxError, "StructuredSyntaxError")
+StructuredRuntimeError = _create_structured_error(RuntimeError, "StructuredRuntimeError")
 
 __all__ = [
     "StructuredException",
