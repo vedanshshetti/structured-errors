@@ -28,6 +28,7 @@ StructuredLookupError = _create_structured_error(LookupError, "StructuredLookupE
 StructuredMemoryError = _create_structured_error(MemoryError, "StructuredMemoryError")
 StructuredSyntaxError = _create_structured_error(SyntaxError, "StructuredSyntaxError")
 StructuredRuntimeError = _create_structured_error(RuntimeError, "StructuredRuntimeError")
+StructuredTimeoutError = _create_structured_error(TimeoutError, "StructuredTimeoutError")
 
 __all__ = [
     "StructuredException",
@@ -44,4 +45,5 @@ __all__ = [
     "StructuredMemoryError",
     "StructuredSyntaxError",
     "StructuredRuntimeError",
+    "StructuredTimeoutError",
 ]

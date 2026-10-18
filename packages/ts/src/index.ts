@@ -16,7 +16,7 @@ export = class StructuredError extends Error implements Error {
      * You can make this ny format you want:
      * @example "AUTH_TOKEN_EXPIRED", "HTTP/401" to keep it classical, or your own format like "MyOwNFoRmAT#123".
      */
-    public readonly errCode: string;
+    public readonly errCode: `${string}/${string}`;
 
     /**
      * Creates a new instance of StructuredError.
@@ -25,7 +25,7 @@ export = class StructuredError extends Error implements Error {
      * @param errorCode - A machine-readable identifier for the error type.
      * @param cause - An optional underlying cause (e.g., another Error object) for error chaining.
      */
-    constructor(message: string, errorCode: string, cause?: unknown) {
+    constructor(message: string, errorCode: `${string}/${string}`, cause?: unknown) {
         super(message, { cause });
         
         // Explicitly set the name to distinguish it from standard Errors in logs
@@ -35,7 +35,7 @@ export = class StructuredError extends Error implements Error {
         this.timestamp = new Date().toISOString();
         
         // Assign the machine-readable code
-        this.errCode = errorCode;
+        this.errCode = errorCode.toUpperCase() as `${string}/${string}`;
     }
 
     /**
@@ -53,7 +53,7 @@ export = class StructuredError extends Error implements Error {
     public to(format: "json" | "string"): string | {
                 name: string,
                 message: string,
-                errCode: string,
+                errCode: `${string}/${string}`,
                 timestamp: string,
                 stack: string | undefined,
                 cause: unknown
