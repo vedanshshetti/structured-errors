@@ -14,6 +14,13 @@ class StructuredError extends Error {
      */
     constructor(message, errorCode, cause) {
         super(message, { cause });
+
+        if(errorCode.split("/").length < 2) {
+            throw new StructuredError(
+                "ERROR: StructuredError property 'errorCode' must comply with specified format: errorCode must be of format 'DOMAIN/ERROR', e.g. 'HTTP/401' or 'DB/CONNECTION_TIMEOUT'.",
+                "STRUCTURED-ERROR/INVALID_FORMAT"
+            )
+        } 
         
         // Explicitly set the name to distinguish it from standard Errors in logs
         this.name = 'StructuredError';
@@ -22,7 +29,7 @@ class StructuredError extends Error {
         this.timestamp = new Date().toISOString();
         
         // Assign the machine-readable code
-        this.errCode = errorCode;
+        this.errCode = errorCode.toUpperCase();
     }
 
     /**
