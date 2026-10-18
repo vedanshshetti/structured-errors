@@ -29,6 +29,10 @@ StructuredMemoryError = _create_structured_error(MemoryError, "StructuredMemoryE
 StructuredSyntaxError = _create_structured_error(SyntaxError, "StructuredSyntaxError")
 StructuredRuntimeError = _create_structured_error(RuntimeError, "StructuredRuntimeError")
 StructuredTimeoutError = _create_structured_error(TimeoutError, "StructuredTimeoutError")
+StructuredUnicodeError = _create_structured_error(UnicodeError, "StructuredUnicodeError")
+StructuredOverflowError = _create_structured_error(OverflowError, "StructuredOverflowError")
+StructuredAssertionError = _create_structured_error(AssertionError, "StructuredAssertionError")
+StructuredAttributeError = _create_structured_error(AttributeError, "StructuredAttributeError")
 
 __all__ = [
     "StructuredException",
@@ -46,4 +50,8 @@ __all__ = [
     "StructuredSyntaxError",
     "StructuredRuntimeError",
     "StructuredTimeoutError",
+    "StructuredUnicodeError",
+    "StructuredOverflowError",
+    "StructuredAssertionError",
+    "StructuredAttributeError",
 ]
