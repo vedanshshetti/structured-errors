@@ -42,4 +42,6 @@ __all__ = [
     "StructuredImportError",
     "StructuredLookupError",
     "StructuredMemoryError",
+    "StructuredSyntaxError",
+    "StructuredRuntimeError",
 ]
