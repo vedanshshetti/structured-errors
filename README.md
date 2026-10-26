@@ -1,264 +1,244 @@
 # structured-errors
 
-> Standardized error classes with ISO-8601 timestamps and machine-readable codes for Python and TypeScript.
+Structured exceptions and errors for Python, TypeScript, and browser
+JavaScript. Each error includes a human-readable message, a machine-readable
+code, and the time at which it was created.
 
-## At a glance
+> **Status:** The packages are usable today, but the APIs are still small and
+> may evolve as the project grows.
 
-| Package | Install | Main type |
-|---------|---------|-----------|
-| Python | `exceptions_with_structure` | `StructuredException` |
-| TypeScript / JavaScript | `@typescript-utils/structured-errors` | `StructuredError` |
+## What is included?
 
-## Contributors
+| Runtime | Package | Primary type | Distribution |
+| --- | --- | --- | --- |
+| Python | `exceptions_with_structure` | `StructuredException` | PyPI |
+| TypeScript / Node.js | `@typescript-utils/structured-errors` | `StructuredError` | npm |
+| Browser JavaScript | `StructuredError` | `StructuredError` | jsDelivr |
 
-- **Python**: Vedansh Shetti ([@vedanshshetti](https://github.com/vedanshshetti))
-- **JavaScript**: Vedansh Shetti ([@vedanshshetti](https://github.com/vedanshshetti))
-- **TypeScript**: Vedansh Shetti ([@vedanshshetti](https://github.com/vedanshshetti))
+All implementations provide:
 
-## Overview
+- a human-readable error message;
+- a machine-readable error code;
+- an ISO-8601 timestamp;
+- a stack trace where the runtime provides one.
 
-Each implementation adds the following information to a normal error:
+The TypeScript and JavaScript implementations also support an optional
+underlying `cause` and conversion to either a JSON-friendly object or a log
+string.
 
-- **ISO-8601 timestamp** - When the error was instantiated. Python uses the local
-  time without a timezone offset; TypeScript uses UTC.
-- **Machine-readable error code** - For programmatic error handling.
-- **Human-readable message** - For debugging and user feedback.
-- **Optional cause chaining** - Available in the TypeScript implementation.
+## Error-code convention
 
-## Packages
+Use an uppercase `DOMAIN/ERROR` code, for example:
 
-This monorepo contains the following language implementations:
+```text
+HTTP/401
+DATABASE/CONNECTION_TIMEOUT
+AUTH/TOKEN_EXPIRED
+```
 
-| Language | Package | Description |
-|----------|---------|-------------|
-| Python | [`packages/py/`](packages/py/) | Python exception class with structured fields |
-| TypeScript | [`packages/ts/`](packages/ts/) | TypeScript Error subclass with JSON serialization |
+TypeScript's type signature requires a code containing `/`, and the
+TypeScript/JavaScript implementations normalize codes to uppercase. Python
+accepts the code as supplied and does not currently validate its format.
 
 ## Installation
 
 ### Python
 
-The Python package is published as `exceptions_with_structure` and requires Python 3.8+.
-
-#### Using pip
-
 ```bash
 pip install exceptions_with_structure
 ```
 
-#### From source (development)
+### TypeScript or Node.js
 
 ```bash
-# Navigate to the Python package
-cd packages/py
-
-# Install in development mode
-pip install -e .
-
-# Or build and install
-pip install build
-python -m build
-pip install dist/exceptions_with_structure-*.whl
+npm install @typescript-utils/structured-errors
+# or: pnpm add @typescript-utils/structured-errors
+# or: yarn add @typescript-utils/structured-errors
 ```
 
-#### Usage
+### Browser JavaScript
+
+Load the standalone browser build from jsDelivr:
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/vedanshshetti/structured-errors@latest/packages/js/index.js"></script>
+```
+
+The script exposes `StructuredError` on `window`.
+
+## Usage
+
+### Python
+
+The distribution is named `exceptions_with_structure`; its Python module is
+`py`.
 
 ```python
 from py import StructuredException, StructuredValueError
 
 try:
-    raise StructuredException("File not found", "IO_ERR_404")
-except StructuredException as e:
-    print(f"Error {e.error_code}: {e}")
-    print(f"Timestamp: {e.timestamp}")
+    raise StructuredException("File not found", "IO/FILE_NOT_FOUND")
+except StructuredException as error:
+    print(error)             # File not found
+    print(error.error_code)  # IO/FILE_NOT_FOUND
+    print(error.timestamp)   # 2026-10-26T19:29:47.805123
 
 try:
-    raise StructuredValueError("Expected a positive number", "VALUE_ERR_POSITIVE")
-except StructuredValueError as e:
-    print(f"Error {e.error_code}: {e}")
+    raise StructuredValueError("Expected a positive number", "VALUE/NOT_POSITIVE")
+except StructuredValueError as error:
+    print(error.error_code)
 ```
 
-`StructuredException` accepts `message` and `error_code` and exposes `timestamp`.
-The package also provides structured variants of common built-in exceptions,
-including `StructuredTypeError`, `StructuredValueError`, `StructuredKeyError`,
-`StructuredIndexError`, `StructuredImportError`, and `StructuredLookupError`.
-It does not currently support an underlying cause parameter.
+`StructuredException(message, error_code)` stores the message in the normal
+Python exception and exposes `error_code` and `timestamp` attributes.
+`timestamp` is generated with `datetime.now().isoformat()`, so it is an
+ISO-8601 local timestamp without an explicit timezone offset.
 
-### TypeScript / JavaScript
+The package also provides structured versions of these built-in exception
+types:
 
-The TypeScript package is published as `@typescript-utils/structured-errors`.
+`StructuredKeyError`, `StructuredTabError`, `StructuredNameError`,
+`StructuredTypeError`, `StructuredValueError`, `StructuredIndexError`,
+`StructuredBufferError`, `StructuredEOFError`, `StructuredImportError`,
+`StructuredLookupError`, `StructuredMemoryError`, `StructuredSyntaxError`,
+`StructuredRuntimeError`, `StructuredTimeoutError`, `StructuredUnicodeError`,
+`StructuredOverflowError`, `StructuredAssertionError`, and
+`StructuredAttributeError`.
 
-#### Using npm
+### TypeScript
 
-```bash
-npm install @typescript-utils/structured-errors
-```
-
-#### Using yarn
-
-```bash
-yarn add @typescript-utils/structured-errors
-```
-
-#### Using pnpm
-
-```bash
-pnpm add @typescript-utils/structured-errors
-```
-
-#### From source (development)
-
-```bash
-# Navigate to the TypeScript package
-cd packages/ts
-
-# Install dependencies
-pnpm install
-
-# Build the package
-pnpm run prepublishOnly
-
-# Link locally for development
-pnpm link --global
-```
-
-#### Usage
-
-**TypeScript:**
+The package uses CommonJS-compatible `export =` syntax:
 
 ```typescript
-import StructuredError = require('@typescript-utils/structured-errors');
+import StructuredError = require("@typescript-utils/structured-errors");
 
 try {
-    throw new StructuredError("Database connection failed", "DB_CONN_ERR");
+  throw new StructuredError(
+    "Database connection failed",
+    "DATABASE/CONNECTION_FAILED",
+  );
 } catch (error) {
-    if (error instanceof StructuredError) {
-        console.error(error.to("string"));
-        // [2026-10-17T...Z]: "DB_CONN_ERR" - "Database connection failed" @ ...
-
-        console.log(error.to("json"));
-        // {
-        //   name: 'StructuredError',
-        //   message: 'Database connection failed',
-        //   errCode: 'DB_CONN_ERR',
-        //   timestamp: '2026-10-17T...Z',
-        //   stack: '...',
-        //   cause: undefined
-        // }
-    }
+  if (error instanceof StructuredError) {
+    console.error(error.to("string"));
+  }
 }
 ```
 
-**JavaScript (CommonJS):**
+The constructor is:
 
-```javascript
-const StructuredError = require('@typescript-utils/structured-errors');
-
-const error = new StructuredError("Invalid input", "VALIDATION_ERR", new Error("Original cause"));
-console.error(error.to("json"));
+```typescript
+new StructuredError(message, errorCode, cause?)
 ```
 
-Or use the CDN at `https://cdn.jsdelivr.net/gh/vedanshshetti/structured-errors@latest/packages/js/index.js`:
+`errorCode` is uppercased when stored. `cause` is optional and may be any
+value, including another `Error`.
+
+### JavaScript
+
+In Node.js, use the same CommonJS package:
+
+```javascript
+const StructuredError = require("@typescript-utils/structured-errors");
+
+const error = new StructuredError(
+  "Invalid input",
+  "REQUEST/INVALID_INPUT",
+  new Error("The original cause"),
+);
+
+console.log(error.to("json"));
+console.log(error.to("string"));
+```
+
+For browser JavaScript loaded from the CDN:
 
 ```html
 <script src="https://cdn.jsdelivr.net/gh/vedanshshetti/structured-errors@latest/packages/js/index.js"></script>
-```
-or
-```js
-import StructuredError from "https://cdn.jsdelivr.net/gh/vedanshshetti/structured-errors@latest/packages/js/index.js";
+<script>
+  const error = new StructuredError("Not found", "HTTP/404");
+  console.error(error.to("json"));
+</script>
 ```
 
-`to("json")` returns an object containing `name`, `message`, `errCode`,
-`timestamp`, `stack`, and `cause`. `to("string")` returns a formatted string
-for logs. The `cause` argument is optional and may contain any underlying
-error or value.
+## Serialization
 
-## Repository structure
+For TypeScript and JavaScript, `error.to("json")` returns an object with:
 
+```text
+name
+message
+errCode
+timestamp
+stack
+cause
 ```
+
+`error.to("string")` returns a formatted log string containing the timestamp,
+code, message, and stack trace. If a stack trace is unavailable, the string
+uses `No stack trace available`.
+
+## Repository layout
+
+```text
 structured-errors/
 ├── packages/
-│   ├── py/
+│   ├── py/                  # Python package
 │   │   ├── src/py/
-│   │   │   ├── __init__.py      # Public Python exports
-│   │   │   ├── Exceptions.py    # Structured exception classes
-│   │   │   └── utils.py         # ISO-8601 timestamp helper
-│   │   ├── pyproject.toml        # Python package configuration
+│   │   │   ├── __init__.py
+│   │   │   ├── Exceptions.py
+│   │   │   └── utils.py
 │   │   └── README.md
-│   └── ts/
-│       ├── src/
-│       │   └── index.ts          # StructuredError class
-│       ├── package.json          # npm package configuration
-│       ├── tsconfig.json         # TypeScript configuration
-│       └── pnpm-lock.yaml        # Dependency lock file
-├── LICENSE
-└── README.md
+│   ├── ts/                  # TypeScript source and npm package
+│   │   ├── src/index.ts
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   └── js/                  # Standalone browser JavaScript build
+│       ├── index.js
+│       └── README.md
+├── SPEC.md
+└── LICENSE
 ```
 
 ## Development
 
 ### Prerequisites
 
-- **Python 3.8+** for the Python package
-- **Node.js** and **pnpm** for the TypeScript package
+- Python 3.8 or newer
+- Node.js and pnpm
 
-### Setting up the monorepo
+### Python package
 
 ```bash
-# Clone the repository
-git clone https://github.com/vedanshshetti/structured-errors.git
-cd structured-errors
-
-# Set up Python package
 cd packages/py
 pip install -e .
-cd ../..
+python -m build
+```
 
-# Set up TypeScript package
+### TypeScript package
+
+```bash
 cd packages/ts
 pnpm install
 pnpm run prepublishOnly
-pnpm link --global
 ```
 
-### Building packages
-
-```bash
-# Build Python package
-cd packages/py
-python -m build
-
-# Build TypeScript package
-cd ../ts
-pnpm run prepublishOnly
-```
-
-The TypeScript build emits declarations and source maps in `packages/ts/dist`.
-The package's `postpublish` script removes that directory after publishing.
-
-## License
-
-All packages in this monorepo are licensed under the **European Union Public Licence 1.2 (EUPL-1.2)**.
-
-See [LICENSE](LICENSE) for full license text.
+The TypeScript build writes declarations and source maps to `packages/ts/dist`.
+The `postpublish` script removes `dist` after publishing.
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request for:
+Bug fixes, documentation improvements, and additional language
+implementations are welcome. Before opening a pull request, please compile the
+package you changed and describe any validation you could not run.
 
-- Bug fixes
-- Feature requests
-- New language implementations
-- Documentation improvements
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the project guidelines.
 
-## Versioning
+## License
 
-Each package maintains its own version number in its respective configuration file:
-
-- Python: `packages/py/pyproject.toml`
-- TypeScript: `packages/ts/package.json`
+This project is licensed under the
+[European Union Public Licence 1.2](LICENSE).
 
 ## Support
 
-For questions, issues, or feature requests, please
-[open an issue](https://github.com/vedanshshetti/structured-errors/issues) on GitHub.
+For questions, bug reports, and feature requests, [open an issue on
+GitHub](https://github.com/vedanshshetti/structured-errors/issues).
