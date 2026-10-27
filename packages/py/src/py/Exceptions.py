@@ -33,6 +33,7 @@ StructuredUnicodeError = _create_structured_error(UnicodeError, "StructuredUnico
 StructuredOverflowError = _create_structured_error(OverflowError, "StructuredOverflowError")
 StructuredAssertionError = _create_structured_error(AssertionError, "StructuredAssertionError")
 StructuredAttributeError = _create_structured_error(AttributeError, "StructuredAttributeError")
+StructuredRecursionError = _create_structured_error(RecursionError, "StructuredRecursionError")
 
 __all__ = [
     "StructuredException",
@@ -54,4 +55,5 @@ __all__ = [
     "StructuredOverflowError",
     "StructuredAssertionError",
     "StructuredAttributeError",
+    "StructuredRecursionError",
 ]
